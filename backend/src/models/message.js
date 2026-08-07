@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
         required: true,
     },
     recieverId:{
-        type: mongoose.Schema.Types.ObjectId,           // this will be an object id.
+        type: mongoose.Schema.Types.ObjectId,           // we send these both with refrence to the user ID.
         ref: "User",
         required: true,
     },
@@ -26,6 +26,7 @@ const messageSchema = new mongoose.Schema({
     },
 },{timestamps:true})
 
-const Message = mongoose.model("Message", messageSchema);
+// we will use this object to get messages, create them, update or delete
+const Message = mongoose.model("Message", messageSchema);       // we created the model, and then export it
 
-export default Message
+export default Message;
