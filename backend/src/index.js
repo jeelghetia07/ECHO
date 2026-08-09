@@ -2,6 +2,8 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";         // to import the .env so we can access the secrets.
+import fs from "fs";     // import file systems.
+import path from "path";
 
 // clerk stores user authentication, if backend sends token, theis clerk middleware checks if its genuine.
 import { clerkMiddleware } from "@clerk/express";
@@ -14,6 +16,10 @@ const app = express();
 const PORT = process.env.PORT
 const FRONTEND_URL = process.env.FRONTEND_URL
 
+// this means join te current working directory and find the public folder....
+const publicDir = path.join(process.cwd(), "public");           // because  we mentioned in the dockerfile stage 3 as the cwd as /app and the /public folder had the "dist"(compressed verision of all files) file for the frotend. 
+
+
 app.use(express.json());
 
 // suppose FRONTEND_URL = http://localhost:5173
@@ -23,12 +29,21 @@ app.use(cors({
     credentials:true        // when the user logins, the browsercookies, JWT tokens, sessions IDs etc. Hence this allows credentials (such as authentication cookies) to be included in cross-origin requests.
 }));
 
-
 app.use(clerkMiddleware());
 
 app.get("/health", (req, res) => {
     res.status(200).json({ok: true})
 })
+
+// if the public directory exists, serve the static files
+// this is for the production build
+if(fs.existsSync(publicDir)){
+    app.use(express.static(publicDir));
+
+    app.get("/{*any}", (req, res, next) => {
+        res.sendFile(path.join(publicDir, "index.html"), (err) => next(err));
+    });
+}
 
 app.listen(PORT, () => {
     connectDB();
