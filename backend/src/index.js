@@ -4,6 +4,7 @@ import cors from "cors";
 import "dotenv/config";         // to import the .env so we can access the secrets.
 import fs from "fs";     // import file systems.
 import path from "path";
+import job from "./lib/cron.js";
 
 // clerk stores user authentication, if backend sends token, theis clerk middleware checks if its genuine.
 import { clerkMiddleware } from "@clerk/express";
@@ -48,4 +49,9 @@ if(fs.existsSync(publicDir)){
 app.listen(PORT, () => {
     connectDB();
     console.log("Server is up and running on port :",PORT)
-})
+
+    if(process.env.NODE_ENV === "production") {
+        job.start()
+    }
+});
+
