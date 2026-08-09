@@ -1,0 +1,62 @@
+# Ignore every node_modules folder anywhere in the project.
+# (** means search recursively in all folders.)
+#
+# Examples:
+# frontend/node_modules
+# backend/node_modules
+# node_modules
+#
+# Docker will NOT copy these into the build context because
+# npm install inside Docker creates fresh Linux-compatible dependencies.
+**/node_modules
+
+# Ignore every dist folder.
+#
+# These are build outputs that Docker will generate itself
+# using "npm run build", so there's no need to copy them
+# from your local machine.
+#
+# Examples:
+# frontend/dist
+# backend/dist
+**/dist
+
+# Ignore environment files containing secrets.
+#
+# Example:
+# MONGO_URI
+# JWT_SECRET
+# CLERK_SECRET_KEY
+#
+# These should be provided separately when running the container,
+# not copied into the image.
+**/.env
+
+# Ignore any environment file with a suffix.
+#
+# Examples:
+# .env.local
+# .env.development
+# .env.production
+# .env.test
+**/.env.*
+
+# Ignore the Git repository.
+#
+# Docker doesn't need commit history to run your application.
+.git
+.gitignore
+
+# Ignore macOS Finder metadata files.
+#
+# These are automatically created on Macs and are useless
+# inside Docker images.
+.DS_Store
+
+# Ignore npm debug log files.
+#
+# These are generated only when npm crashes.
+# They are not needed inside the image.
+*.log
+npm-debug.log*
+README.md
