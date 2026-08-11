@@ -46,11 +46,13 @@ if(fs.existsSync(publicDir)){
     });
 }
 
+// this will start the application so here we start the cron job after connecting to the DB
 app.listen(PORT, () => {
     connectDB();
     console.log("Server is up and running on port :",PORT)
 
-    if(process.env.NODE_ENV === "production") {
+    /* In the laptop it will be development, and after deploying it, the render will automatically change it into production */
+    if(process.env.NODE_ENV === "production") {     
         job.start();
     }
 });
