@@ -10,7 +10,7 @@ import User from "./models/user.js";
 import connectDB from "./lib/db.js";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
 
-// Version 1.0
+// Version 1.1
 const app = express();
 
 const PORT = process.env.PORT
