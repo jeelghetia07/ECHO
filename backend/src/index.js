@@ -12,6 +12,7 @@ import { clerkMiddleware } from "@clerk/express";
 import User from "./models/user.js";
 import connectDB from "./lib/db.js";
 
+// Version 1.0
 const app = express();
 
 const PORT = process.env.PORT
