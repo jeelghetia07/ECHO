@@ -15,11 +15,16 @@ router.post("/", async (req, res) => {
 
         // clerk's verifier expects a Web Request with the raw body; express.raw gives a Buffer.
         const payload = Buffer.isBuffer(req.body) ? req.body.toString("utf8") : String(req.body);
-        const request = new Request("http://internal/webhooks/clerk", {
-            method: "POST",
-            headers: new Headers(req.headers),
-            body: payload,
-        });
+
+        // Express receives a simple "req", but the verifyWebhook demands "Web API request", not the Express "req", so we convert that into a Web API request.
+        const request = new Request(
+            "http://internal/webhooks/clerk",
+            {
+                method: "POST",
+                headers: new Headers(req.headers),
+                body: payload,
+            }
+        );
 
         // throws if the signature is wrong or the body was tampered with; only then do we trust evt.
         const evt = await verifyWebhook(request, { signingSecret });

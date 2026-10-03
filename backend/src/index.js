@@ -9,6 +9,7 @@ import { clerkMiddleware } from "@clerk/express"; // clerk stores user authentic
 import User from "./models/user.js";
 import connectDB from "./lib/db.js";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
+import authRoutes from "./routes/auth.route.js";
 
 // Version 1.1
 const app = express();
@@ -20,7 +21,11 @@ const FRONTEND_URL = process.env.FRONTEND_URL
 const publicDir = path.join(process.cwd(), "public");           // because  we mentioned in the dockerfile stage 3 as the cwd as /app and the /public folder had the "dist"(compressed verision of all files) file for the frotend. 
 
 // its imp that you dont parse the webhook event data, it should be in the raw format.
-app.use("/api/webhooks/clerk", express.raw({type: "application/json"}), clerkWebhook);
+app.use(
+    "/api/webhooks/clerk",
+    express.raw({type: "application/json"}),
+    clerkWebhook
+);
 
 app.use(express.json());
 
@@ -36,6 +41,8 @@ app.use(clerkMiddleware());
 app.get("/health", (req, res) => {
     res.status(200).json({ok: true})
 })
+
+app.use("/api/auth", authRoutes);
 
 // if the public directory exists, serve the static files
 // this is for the production build
