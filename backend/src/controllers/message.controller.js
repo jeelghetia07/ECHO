@@ -1,7 +1,7 @@
 import User from "../models/user.js"
 import Message from "../models/message.js"
 import { hasImageKitConfig } from "../lib/imagekit.js";
-import { getReceiverSocketId } from "../lib/socket.js"
+import { io, getReceiverSocketId } from "../lib/socket.js"
 
 export async function getUsersForSideBar(req, res) {
     try{
@@ -20,7 +20,7 @@ export async function getConversationsForSideBar(req, res) {
         const loggedInUserId = req.user_.id;
         const conversations = await Message.aggregate([
             // 1. Keep only the messages sent or received
-            {$match: {$or: [{ senderId: loggedInUserId}, {receivedId: loggedInUserId}]}},
+            {$match: {$or: [{ senderId: loggedInUserId}, {receiverId: loggedInUserId}]}},
             // 2. Collapse them into one row per chat partner, nothing our lastest message time.
             {
                 $group: {
@@ -81,7 +81,7 @@ export async function sendMessages(req, res){
             }
 
             const url = await uploadChatMedia(req.file);
-            if(req.file.mimetype.startWith("video/")) videoUrl = url;
+            if(req.file.mimetype.startsWith("video/")) videoUrl = url;
             else imageUrl = url;
         }
 
@@ -101,8 +101,8 @@ export async function sendMessages(req, res){
         if(receiverSocketId){
             io.to(receiverSocketId).emit("new Message", newMessage);
         }
-        res.statsu(201).json(newMessage);
-    }catch(error) {
+        res.status(201).json(newMessage);
+    }catch(err) {
         console.error("Error in sendMessages.", err.message);
         res.status(500).json({message: "Internal server error"});
     }
