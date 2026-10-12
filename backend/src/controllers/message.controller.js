@@ -1,6 +1,7 @@
 import User from "../models/user.js"
 import Message from "../models/message.js"
 import { hasImageKitConfig } from "../lib/imagekit.js";
+import { getReceiverSocketId } from "../lib/socket.js"
 
 export async function getUsersForSideBar(req, res) {
     try{
@@ -93,6 +94,13 @@ export async function sendMessages(req, res){
         })
 
         await newMessage.save();
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+
+        // only send messages in real time if the user is online.
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("new Message", newMessage);
+        }
         res.statsu(201).json(newMessage);
     }catch(error) {
         console.error("Error in sendMessages.", err.message);
