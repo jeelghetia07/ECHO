@@ -86,8 +86,8 @@ export const useChatStore = create(
         const socket = useAuthStore.getState().socket;
         if (!socket) return;
 
-        socket.off("newMessage");
-        socket.on("newMessage", (newMessage) => {
+        socket.off("new Message");
+        socket.on("new Message", (newMessage) => {
           // if im not the receiver don't do anything just return
           if (String(newMessage.senderId) !== String(userId)) return;
 
@@ -99,7 +99,7 @@ export const useChatStore = create(
 
       unsubscribeFromMessages: () => {
         const socket = useAuthStore.getState().socket;
-        socket?.off("newMessage");
+        socket?.off("new Message");
       },
 
       setSelectedUser: (selectedUser) => set({ selectedUser }),
