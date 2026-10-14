@@ -17,7 +17,7 @@ export async function getUsersForSideBar(req, res) {
 
 export async function getConversationsForSideBar(req, res) {
     try {
-        const loggedInUserId = req.user_.id;
+        const loggedInUserId = req.user._id;
         const conversations = await Message.aggregate([
             // 1. Keep only the messages sent or received
             {$match: {$or: [{ senderId: loggedInUserId}, {receiverId: loggedInUserId}]}},
