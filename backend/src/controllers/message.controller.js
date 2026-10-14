@@ -25,7 +25,7 @@ export async function getConversationsForSideBar(req, res) {
             {
                 $group: {
                     // The partner is the other person on the message (not me).
-                    _id: {$cond: [{$eq: ["$senderIs", loggedInUserId]}, "$receiverId", "$senderId"]},
+                    _id: {$cond: [{$eq: ["$senderId", loggedInUserId]}, "$receiverId", "$senderId"]},
                     lastMessageAt: {$max: "$createdAt"},
                 },
             },
@@ -36,7 +36,7 @@ export async function getConversationsForSideBar(req, res) {
             // 5. Pull that profile out the array and make it the document.
             {$replaceRoot: {newRoot: {$first: "$user"}}},
             // 6. Hide the private clerkId field from the result.
-            {$project: {$clerkId: 0}},
+            {$project: {clerkId: 0}},
         ]);
 
         res.status(200).json(conversations);
